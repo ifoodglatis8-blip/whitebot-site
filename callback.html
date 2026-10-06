@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>WhiteBot - Painel</title>
+<style>
+body{background:#0a0a0a;color:#fff;font-family:Arial;text-align:center;padding:20px}
+.box{background:#151515;padding:22px;border-radius:16px;max-width:520px;margin:20px auto;border:1px solid #222}
+input{width:100%;padding:14px;border-radius:10px;margin-top:12px;background:#1f1f1f;color:#fff;border:1px solid #333}
+button{width:100%;padding:14px;border-radius:10px;margin-top:14px;background:#5865F2;color:#fff;border:0;font-weight:bold;cursor:pointer}
+.small{font-size:13px;color:#888;margin-top:8px}
+</style></head>
+<body>
+<h1>⚪ WhiteBot Dashboard</h1>
+<div class="box" id="box">Carregando...</div>
+<script>
+const BACKEND='https://fi17.bot-hosting.cloud:26242';
+function init(){
+document.getElementById('box').innerHTML=`
+<p style="color:#22c55e">✅ Bot Online: ${BACKEND}</p>
+<h3>🎭 Configurar Autorole</h3>
+<p class="small">ID do Servidor:</p>
+<input id="guildId" placeholder="Ex: 123456789...">
+<p class="small">ID do Cargo:</p>
+<input id="roleId" placeholder="Ex: 987654321...">
+<button onclick="salvar()">Salvar Autorole</button>
+<p id="status" class="small"></p>
+<p class="small">Modo desenvolvedor > botão direito no servidor/cargo > Copiar ID</p>`;
+}
+async function salvar(){
+const guildId=document.getElementById('guildId').value.trim();
+const roleId=document.getElementById('roleId').value.trim();
+const status=document.getElementById('status');
+if(!guildId||!roleId){status.innerText='Preencha tudo';return}
+status.innerText='Salvando...';
+try{
+const r=await fetch(`${BACKEND}/api/autorole`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({guildId,roleId})});
+const j=await r.json();
+if(j.ok) status.innerHTML='<b style="color:#22c55e">✅ Salvo! Testa entrando no servidor.</b>';
+else status.innerText='Erro: '+JSON.stringify(j);
+}catch(e){status.innerText='Erro conexao com Bothosting: '+e.message}
+}
+init();
+</script>
+</body>
+</html>
